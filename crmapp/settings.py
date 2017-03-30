@@ -81,10 +81,10 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.core.context_processors.i18n',
-                'django.core.context_processors.media',
-                'django.core.context_processors.static',
-                'django.core.context_processors.tz',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
             ],
         },
     },
@@ -92,12 +92,10 @@ TEMPLATES = [
 
 #SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-TEMPLATES[0]['DEBUG'] = DEBUG
 CRMEASY_DB_PASS = False
 
 if ENV_ROLE == 'development':
     DEBUG = True
-    TEMPLATES[0]['DEBUG'] = DEBUG
     CRMEASY_DB_PASS = get_env_variable('CRMEASY_DB_PASS')
 
 WSGI_APPLICATION = 'crmapp.wsgi.application'

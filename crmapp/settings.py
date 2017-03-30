@@ -152,8 +152,9 @@ USE_TZ = True
 STATIC_ROOT = PROJECT_DIR.child('static')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-    PROJECT_DIR.child('commons'),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 MEDIA_ROOT = PROJECT_DIR.child('media')
 MEDIA_URL = '/media/'
+

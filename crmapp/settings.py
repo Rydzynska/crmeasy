@@ -11,26 +11,37 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+from django.core.exceptions import ImproperlyConfigured
 from unipath import Path
 
 
 PROJECT_DIR = Path(__file__).ancestor(3)
 PROJECT_NAME = 'crmeasy'
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Handling Key Import Errors
+def get_env_variable(var_name):
+    """ Get the environment variable or return exception """
+    try:
+        return os.environ[var_name]
+    except KeyError:
+        error_msg = "Set the %s environment variable" % var_name
+        raise ImproperlyConfigured(error_msg)
+
+# Get ENV VARIABLES key
+ENV_ROLE = get_env_variable('ENV_ROLE')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = os.environ['CRMEASY_SECRET_KEY']
+SECRET_KEY = get_env_variable('CRMEASY_SECRET_KEY')
 
-SECRET_KEY = 'secret_key'
+# SECRET_KEY = 'secret_key'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -74,6 +85,16 @@ TEMPLATES = [
     },
 ]
 
+#SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+TEMPLATES[0]['DEBUG'] = DEBUG
+CRMEASY_DB_PASS = False
+
+if ENV_ROLE == 'development':
+    DEBUG = True
+    TEMPLATES[0]['DEBUG'] = DEBUG
+    CRMEASY_DB_PASS = get_env_variable('CRMEASY_DB_PASS')
+
 WSGI_APPLICATION = 'crmapp.wsgi.application'
 
 
@@ -85,7 +106,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'crmeasydb',
         'USER': 'agnieszka',
-        'PASSWORD': 'pass',
+        'PASSWORD': CRMEASY_DB_PASS,
         # 'HOST': '',
         # 'PORT': '',
     }
